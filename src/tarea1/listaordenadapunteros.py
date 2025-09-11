@@ -17,9 +17,11 @@ class ListaOrdenadaPunteros(Diccionario):
         pass
 
     def inserte(self, elemento):
+        nodo = Nodo(elemento)
         if self.__cabeza.siguiente is None:
             self.__cabeza.siguiente = Nodo(elemento)
         else:
             referencia = self.__cabeza
             while referencia.siguiente.elemento < elemento and referencia.siguiente.siguiente is not None:
-        
+                referencia = referencia.siguiente
+        #Logica insertar
