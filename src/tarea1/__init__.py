@@ -8,7 +8,9 @@ Programado por Braulio José Solano Rojas.
 from __future__ import annotations
 
 import sys
+import time, random, statistics
 
+from tarea1.tablahashabierta import TablaHashAbierta
 from rich import box
 from rich.align import Align
 from rich.console import Console
@@ -52,9 +54,74 @@ def pausa(msg: str = "Pulse [bold]Enter[/] para continuar…") -> None:
 
 
 def leer_hilera(pregunta: str) -> str:
-    """Lee una hilera similar a TDato (máx. 20 chars como en el Pascal)."""
     s = Prompt.ask(pregunta).strip()
     return s[:20]
+
+
+# =====================
+# Utilidades de prueba (Hash)
+# =====================
+
+def _rand_string(length: int = 20) -> str:
+    return ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(length))
+
+def _bucket_sizes(ht) -> list[int]:
+    return [len(b) for b in ht._buckets]  # acceso directo
+
+def pruebas_hash_basicas() -> None:
+    """
+    Mini-benchmark solicitado en la Etapa 1:
+    Inserta N cadenas aleatorias en una TablaHashAbierta y reporta:
+    - Factor de carga (LF)
+    - Estadísticos de cubetas
+    - Rehashes realizados
+    - Tiempo total de inserción
+    """
+    console.clear()
+    panel_contenido("Pruebas de rendimiento – Hash (Etapa 1)", titulo="Benchmark básico")
+
+    try:
+        n = int(Prompt.ask("N (ej. 10000)", default="10000"))
+        m = int(Prompt.ask("Capacidad inicial m (ej. 1024)", default="1024"))
+        seed = int(Prompt.ask("Semilla (ej. 42)", default="42"))
+    except Exception:
+        console.print("[red]Entradas inválidas.[/]")
+        pausa()
+        return
+
+    random.seed(seed)
+    ht = TablaHashAbierta(capacidad=m, lf_max=0.75)
+
+    rehash_puntos = []
+    cap_prev = ht._cap
+
+    t0 = time.perf_counter()
+    for i in range(n):
+        ht.inserte(_rand_string(20))
+        if ht._cap != cap_prev:
+            cap_prev = ht._cap
+            rehash_puntos.append((i + 1, cap_prev))
+    t1 = time.perf_counter()
+
+    sizes = _bucket_sizes(ht)
+    total = sum(sizes)
+    lf = total / ht._cap if ht._cap else 0
+
+    mean_b = statistics.fmean(sizes) if sizes else 0.0
+    std_b  = statistics.pstdev(sizes) if sizes else 0.0
+    min_b  = min(sizes) if sizes else 0
+    max_b  = max(sizes) if sizes else 0
+
+    cuerpo = (
+        f"\nResultados con N={n}, m_inicial={m}\n\n"
+        f"Tiempo total de inserción: {t1 - t0:.4f} s\n"
+        f"Capacidad final: {ht._cap}   Rehashes: {len(rehash_puntos)}\n"
+        f"Puntos de rehash: {rehash_puntos}\n\n"
+        f"Factor de carga (LF = n/m): {lf:.3f}\n"
+        f"Cubetas — media={mean_b:.3f}  σ={std_b:.3f}  min={min_b}  max={max_b}\n"
+    )
+    panel_contenido(cuerpo, titulo="Reporte Hash – Etapa 1")
+    pausa()
 
 
 # =====================
@@ -219,7 +286,7 @@ def menu_clase() -> Diccionario:
                 case "2":
                     return ListaOrdenadaEstática(100)
                 case "3":
-                    pass
+                    return TablaHashAbierta()
                 case "4":
                     pass
                 case "5":
@@ -265,7 +332,7 @@ def main() -> None:
             diccionario = menu_clase()
             menu_diccionario(diccionario)
         case "2":
-            pass
+            pruebas_hash_basicas()
 
 
 if __name__ == "__main__":
