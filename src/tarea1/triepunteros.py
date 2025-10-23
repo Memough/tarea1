@@ -1,4 +1,4 @@
-from tarea1.diccionario import Diccionario
+from diccionario import Diccionario
 
 class Nodo:
     def __init__(self, elemento:str=''):
@@ -29,10 +29,17 @@ class TriePunteros(Diccionario):
     #finnish later bruh
     def inserte(self, elemento:str):
         actual = self.__raiz
-        if self.tamaño == 0:
+        if self.__tamaño == 0:
             for n in elemento:
-                actual.raiz.hijo = Nodo(n)
+                actual.hijo = Nodo(n)
                 actual = actual.hijo
+        else:
+            actual = actual.hijo
+            for n in elemento:
+                if(self.__charExist__(n, actual)==self.__tamaño):
+                    nuevo = Nodo(n)
+                    
+                    
 
     #do later
     def borre(self, elemento:str):
