@@ -1,0 +1,52 @@
+Especificaciones del Modelo Diccionario:
+Modelo de estructura de datos de modelo tipo diccionario, que almacena datos del tipo string.
+Operaciones:
+inserte: inserta un elemento string al diccionario. puede ser repetido
+borre: elimina un elemento del diccionario
+limpie: elimina todos los elementos del diccionario
+miembro: revisa si un elemento ya existe dentro del diccionario
+imprima: imprime los elementos del diccionario
+
+Descripción de la Estructura de Datos Generica Lista Ordenada:
+Estructura de datos que almacena elementos de forma seguida, un elemento tras otro, manteniendolos un tipo de orden determinado desde su incersión.
+
+Descripción de la Estructura de Datos Lista Ordenada por punteros simplemente enlazada:
+Una lista ordenada implementada de manera dinamica con el uso objetos nodo y referencia apuntando al siguiente elemento en la lista. Incluyendo un nodo de cabeza que se usa como inicio de lista.
+
+operaciones:
+inserte: se recorre la lista desde la cabeza revisando el siguiente elemento hasta que este este vacio para luego crear un objeto nodo dentro de ese espacio siguiente
+borre:se recorre la lista desde la cabeza comparando los elementos guardados en los nodos con el elemento a eliminar. En caso de que encuentre una igualdad se saca el objeto de la lista, se modifican las "referencias" hacia el siguiente elemento y se reduce su tamaño.
+limpie:se define la cabeza como vacia al igual que la referencia al siguiente nodo y se reduce el tamaño a 0.
+miembro:se recorre la lista desde la cabeza comparando los elementos guardados en los nodos con el elemento a buscar. En caso de que encuentre una igualdad se retorna un valor booleano verdadero.
+imprima:se imprime a si mismo
+
+Descripción de la Estructura de Datos Lista Ordenada por arreglos:
+Una lista ordena implementada de manera estatica con el uso de una clase array de tamaño fijo definido en la creacion de la lista.
+
+operaciones:
+inserte:en caso de que la lista no se encuentre llena se recorre el array em busca de la posicion correspondiente, al encontrarlo se desplazan los elementos que esten en dicho espacio en adelante antes de insertarlo en la posicion correspondiente.
+borre:recorre el array comparando cada elemento con el elemento a eliminar. En caso de encontrar una correspondecia se desplazan los elementos siguientes hacia atras sobreescribiendo el valor de paso, además de limpiar la última celda.
+limpie:recorre cada indice del array reemplazando el elemento con un vacio("").
+miembro:recorre el array comparando cada elemento con el elemento a encontrar. En caso de encontrar una igualdad retorna un valor booleano verdadero.
+imprima:se imprime a si mismo
+
+
+Descripción de la Estructura de Datos genérica Tabla Hash
+Estructura de datos que almacena elementos asociandolos con una clave o llave, haciendolo de facil y rapida acceso.
+
+Descripción de la Estructura de Datos Tabla Hash abierta
+Tabla hash cuyas celdas estan conformados por listas en vez de un solo espacio, para almacenar varios valores en caso de que dos elementos tengan la misma asignación. Implementados por listas de listas
+
+Operaciones:
+inserte: calcula a cual celda tiene que ser insertado el valor y luego lo añada a la lista de la celda.
+Borre:busca en la celda asignada al valor la primer corrrespondencia dentro de la lista y lo elimina en caso de encontrarlo
+limpie: agarra las celdas y las limpia
+miembro:revisa si hay algun elemento en la celda correcta
+imprima: se imprime a si misma
+
+Descripción de la función hash y la evaluación de su “aleatoriedad”
+Le hashing agarra la clave y devuelve un entero el cual funciona como el indice donde se almacenará el elemento. El hashing debería de distribuir los elementos de manera que se sienta random aunque solo sea determininista.
+
+Descripción del proceso de redistribución y la evaluación de su tiempo de duración
+El rehashing se hace cuando se generan varias colisiones o se llena demasiado la tabla. En en esa caso se debe de rehacer la tabla y recalcular los hashes para reinsertar los elementos.
+En cuando a su tiempo se puede considerar O(n) ya que tiene que rehacer la tabla y rehashaer todos los n elementos guardados.
