@@ -97,3 +97,13 @@ Borre: Recorre cada letra de la palabra comparando con los niveles del arbol has
 Limpie: se borran los punteros de los hijos para volver a un estado inicial.
 Miembro: Recorre cada letra de la palabra comparando con los nodos hasta llegar al final de la palabra revisando si en el mismo nodo se encuentra una terminacion de palabra.
 Imprima: se imprime a si misma
+
+Descripción de la estructura de datos trie por arreglos:
+Estructura de datos para almacenar cadenas usando un árbol de prefijos. Cada nodo mantiene un arreglo fijo de hijos donde cada posición representa un carácter permitido. En este caso se usan 27 posiciones: 26 para las letras a..z y 1 posición especial para marcar el fin de palabra.
+
+Operaciones:
+Inserte: recorre la palabra carácter por carácter, si un hijo no existe se crea un nuevo nodo en la posición correspondiente del arreglo. Al final marca la celda especial de fin de palabra.
+Borre: verifica que la palabra exista, desmarca el fin de palabra y elimina nodos “hoja” que hayan quedado sin hijos para no desperdiciar espacio.
+Limpie: reasigna la raíz a un nodo vacío y deja todos los arreglos de hijos sin referencias.
+Miembro: recorre los hijos según los caracteres, al terminar comprueba la marca de fin de palabra para confirmar que la cadena está almacenada.
+Imprima: recorre el trie en orden alfabético acumulando caracteres y muestra todas las palabras almacenadas.
