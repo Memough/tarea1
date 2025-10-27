@@ -21,6 +21,7 @@ from tarea1.diccionario import Diccionario
 from tarea1.listaordenadadinamica import ListaOrdenadaDinámica
 from tarea1.listaordenadaestatica import ListaOrdenadaEstática
 from tarea1.triearreglos import TrieArreglos
+from tarea1.triepunteros import TriePunteros
 
 console = Console()
 
@@ -293,7 +294,7 @@ def menu_clase() -> Diccionario:
                 case "5":
                     pass
                 case "6":
-                    pass
+                    return TriePunteros()
                 case "7":
                     return TrieArreglos()
     except BaseException:
