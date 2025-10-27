@@ -20,6 +20,7 @@ from rich.prompt import Prompt
 from tarea1.diccionario import Diccionario
 from tarea1.listaordenadadinamica import ListaOrdenadaDinámica
 from tarea1.listaordenadaestatica import ListaOrdenadaEstática
+from tarea1.triearreglos import TrieArreglos
 
 console = Console()
 
@@ -294,7 +295,7 @@ def menu_clase() -> Diccionario:
                 case "6":
                     pass
                 case "7":
-                    pass
+                    return TrieArreglos()
     except BaseException:
         raise ValueError("No se pudo instanciar una clase diccionario.")
 
