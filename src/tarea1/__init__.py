@@ -20,6 +20,8 @@ from rich.prompt import Prompt
 from tarea1.diccionario import Diccionario
 from tarea1.listaordenadadinamica import ListaOrdenadaDinámica
 from tarea1.listaordenadaestatica import ListaOrdenadaEstática
+from tarea1.abbpunteros import ABBPunteros
+from tarea1.abbvectorheap import ABBVectorHeap
 from tarea1.triearreglos import TrieArreglos
 
 console = Console()
@@ -289,9 +291,9 @@ def menu_clase() -> Diccionario:
                 case "3":
                     return TablaHashAbierta()
                 case "4":
-                    pass
+                    return ABBPunteros()
                 case "5":
-                    pass
+                    return ABBVectorHeap()
                 case "6":
                     pass
                 case "7":
