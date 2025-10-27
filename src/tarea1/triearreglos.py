@@ -133,14 +133,42 @@ class TrieArreglos(Diccionario):
     def borre(self, elemento):
         """
         Borra una palabra del Trie.
-        
-        Args:
-            elemento (str): La palabra a borrar
+        Retorna True si se borró correctamente, False si no existía.
         """
         if not elemento:
-            return
-        
-        self._borre_en(self.raiz, elemento.lower(), 0)
+            return False
+
+        # Normaliza a minúsculas
+        palabra = elemento.lower()
+        nodo_actual = self.raiz
+        pila = []
+
+        # Recorre cada carácter y guarda el camino
+        for caracter in palabra:
+            indice = Nodo.char_a_indice(caracter)
+            if nodo_actual.hijos[indice] is None:
+                return False  # No existe la palabra
+            pila.append((nodo_actual, indice))
+            nodo_actual = nodo_actual.hijos[indice]
+
+        # Marca de fin de palabra
+        indice_fin = Nodo.char_a_indice('{')
+        if nodo_actual.hijos[indice_fin] != nodo_actual:
+            return False  # No estaba marcada como palabra completa
+
+        # Desmarca la palabra
+        nodo_actual.hijos[indice_fin] = None
+
+        # Limpieza de nodos innecesarios (de atrás hacia adelante)
+        while pila:
+            padre, indice = pila.pop()
+            if not nodo_actual.tiene_hijos():
+                padre.hijos[indice] = None
+                nodo_actual = padre
+            else:
+                break
+
+        return True
     
     def _borre_en(self, nodo, palabra, i):
         """
