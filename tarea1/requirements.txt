@@ -1,7 +1,0 @@
-markdown-it-py==4.0.0
-mdurl==0.1.2
-Pygments==2.19.2
-rich==14.1.0
-# Editable install with no version control (tarea1==0.1.0)
-# -e d:\descargas\tarea1\tarea1
-wheel==0.45.1
