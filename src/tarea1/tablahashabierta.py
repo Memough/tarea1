@@ -1,4 +1,4 @@
-from tarea1.diccionario import Diccionario
+from diccionario import Diccionario
 
 def _poli_hash(s: str, mod: int) -> int:
     """Función hash polinómica base 27 sobre 'a'..'z'."""

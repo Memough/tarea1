@@ -1,4 +1,4 @@
-from tarea1.diccionario import Diccionario
+from diccionario import Diccionario
 
 class Nodo:
     """los nodos usados para almacenar cada caracter"""
@@ -120,12 +120,16 @@ class TriePunteros(Diccionario):
             return False
         actual = self.__raiz
         for n in elemento:
+            if actual.hijo is None:
+                return False
             index = self.__charExist__(n,actual.hijo)
             if(index == actual.cantidadHijos): #si el index es igual a la cantidad de hijos entonces no encontro alguna coindencia en dichos hijos
                 return False #no encontro la palabra
             actual = actual.hijo
             for i in range(index): #se posiciona en el hijo correspondiente
                 actual=actual.siguiente
+        if actual.hijo is None:
+            return False
         if(self.__charExist__('}',actual.hijo) == actual.cantidadHijos):
             return False
         return True

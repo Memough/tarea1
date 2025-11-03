@@ -1,4 +1,4 @@
-from tarea1.diccionario import Diccionario
+from diccionario import Diccionario
 
 class Nodo:
     def __init__(self, elemento:str=''):

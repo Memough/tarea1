@@ -10,20 +10,20 @@ from __future__ import annotations
 import sys
 import time, random, statistics
 
-from tarea1.tablahashabierta import TablaHashAbierta
+from tablahashabierta import TablaHashAbierta
 from rich import box
 from rich.align import Align
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 
-from tarea1.diccionario import Diccionario
-from tarea1.listaordenadadinamica import ListaOrdenadaDinámica
-from tarea1.listaordenadaestatica import ListaOrdenadaEstática
-from tarea1.abbpunteros import ABBPunteros
-from tarea1.abbvectorheap import ABBVectorHeap
-from tarea1.triearreglos import TrieArreglos
-from tarea1.triepunteros import TriePunteros
+from diccionario import Diccionario
+from listaordenadadinamica import ListaOrdenadaDinámica
+from listaordenadaestatica import ListaOrdenadaEstática
+from abbpunteros import ABBPunteros
+from abbvectorheap import ABBVectorHeap
+from triearreglos import TrieArreglos
+from triepunteros import TriePunteros
 
 console = Console()
 
