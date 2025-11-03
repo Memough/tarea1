@@ -1,114 +1,180 @@
 from diccionario import Diccionario
 
 class Nodo:
-    """los nodos usados para almacenar cada caracter"""
-    def __init__(self, elemento:str=''):
+    """Nodo de la lista de hijos con puntero a primer hijo y a siguiente hermano."""
+    def __init__(self, elemento: str = ''):
         self.elemento = elemento
-        self.cantidadHijos=0
-        self.hijo: Nodo | None = None #puntero a la lista con los caracteres siguientes de la palabra
-        self.siguiente: Nodo |None = None #puntero al caracter alternativo de la palabra
-        self.padre : Nodo | None = None #puntero de regreso para simular recursvidad de manera iterativa
+        self.cantidadHijos = 0
+        self.hijo: 'Nodo | None' = None       # primer hijo 
+        self.siguiente: 'Nodo | None' = None  # siguiente hermano en la lista
+        self.padre: 'Nodo | None' = None      # puntero al padre 
 
 
 class TriePunteros(Diccionario):
+    """
+    Implementación de Trie por punteros con lista ligada de hijos
+    """
+    FIN = '}'  # marca de fin de palabra
+
     def __init__(self):
         self.__raiz = Nodo()
         self.__tamaño = 0
 
-    def __len__(self)->int:
-        """retorna el tamaño del trie"""
+    def __len__(self) -> int:
         return self.__tamaño
+
+    # internas
+    def __validar(self, elemento: str) -> str:
+        if not isinstance(elemento, str):
+            raise TypeError("La clave debe ser str")
+        s = elemento.strip().lower()
+        if not s:
+            raise ValueError("La clave no puede ser vacía")
+        return s
+
+    def __buscar_en_hijos(self, primero: Nodo | None, ch: str):
+        """
+        Busca el caracter en la lista ligada primero.
+        Retorna el encontrado, el anterior y el indice.
+        Si no lo encuentra retorna none como encontrado.
+        """
+        idx = 0
+        ant = None
+        act = primero
+        while act is not None:
+            if act.elemento == ch:
+                return act, ant, idx
+            ant = act
+            act = act.siguiente
+            idx += 1
+        return None, ant, idx  # no encontrado
     
-    def __charExist__(self, char:str, actual:Nodo)->int:
-        """busca si el caracter existe dentro de esa sección de hijos"""
-        index = 0
-        while actual is not None:
-            if actual.elemento == char:
-                return index
-            else:
-                actual = actual.siguiente
-                index += 1
-        return index
-
-    def inserte(self, elemento:str):
-        """inserta un elemento al diccionario
-        
-        Args:
-            elemento (str):la palabra a insertar
+    def __buscar_o_previo_ordenado(self, primero: Nodo | None, ch: str):
         """
+        Recorre hermanos manteniendo orden alfabético.
+        Si existe 'ch', retorna nodo, anterior.
+        Si no existe, retorna None, anterior, debe insertarse después de anterior
+        si anterior es None, se inserta al inicio.
+        """
+        ant = None
+        act = primero
+        # saltar el FIN al comienzo si está
+        if act is not None and act.elemento == self.FIN:
+            ant = act
+            act = act.siguiente
+        while act is not None and act.elemento < ch:
+            ant = act
+            act = act.siguiente
+        if act is not None and act.elemento == ch:
+            return act, ant
+        return None, ant
+
+    def __tiene_fin(self, nodo: Nodo) -> bool:
+        """True si entre los hijos de nodo existe la marca de fin de palabra."""
+        encontrado, _, _ = self.__buscar_en_hijos(nodo.hijo, self.FIN)
+        return encontrado is not None
+
+    def inserte(self, elemento: str):
+        palabra = self.__validar(elemento)
         actual = self.__raiz
-        if self.__tamaño == 0: #checkea de que no este vacio
-            for n in elemento: 
-                actual.hijo = Nodo(n)
-                actual.hijo.padre = actual
-                actual.cantidadHijos +=1
-                actual = actual.hijo
-        else:
-            for n in elemento:
-                index = self.__charExist__(n, actual.hijo) #revisa si existe un nodo con el mismo caracter
-                if(index == actual.cantidadHijos): #en caso de que no crea uno al inicio
-                    nuevo = Nodo(n)
+
+        # Recorre/crea el camino
+        for ch in palabra:
+            encontrado, anterior = self.__buscar_o_previo_ordenado(actual.hijo, ch)
+            if encontrado is None:
+                nuevo = Nodo(ch)
+                nuevo.padre = actual
+                # insertar después de anterior o al inicio si es none
+                if anterior is None:
+                    # si hay FIN debe quedarse primero
                     nuevo.siguiente = actual.hijo
-                    actual.cantidadHijos +=1
                     actual.hijo = nuevo
-                    actual.hijo.padre = actual
-                    actual = actual.hijo
-                else: #en caso de que si se mueve hacia ese nodo
-                    actual = actual.hijo
-                    for i in range(index):
-                        actual=actual.siguiente
-        #crea un nodo notificando la terminacion de la palabra
-        fin = Nodo('}')
-        fin.siguiente = actual.hijo
-        actual.hijo = fin
-        actual.hijo.padre = actual
-        actual.cantidadHijos +=1
-        self.__tamaño +=1
+                else:
+                    nuevo.siguiente = anterior.siguiente
+                    anterior.siguiente = nuevo
+                actual.cantidadHijos += 1
+                encontrado = nuevo
+            actual = encontrado
 
-    #do later
-    def borre(self, elemento:str):
-        """borra un elemento al diccionario
-        
-        Args:
-            elemento (str):la palabra a borrar
-        """
-        borrarEntero = True
+        # insertar FIN al INICIO
+        if not self.__tiene_fin(actual):
+            fin = Nodo(self.FIN)
+            fin.padre = actual
+            fin.siguiente = actual.hijo
+            actual.hijo = fin
+            actual.cantidadHijos += 1
+            self.__tamaño += 1
+
+    def miembro(self, elemento: str) -> bool:
+        if self.__tamaño == 0:
+            return False
+        try:
+            palabra = self.__validar(elemento)
+        except Exception:
+            return False
+
         actual = self.__raiz
-        if(self.miembro(elemento) == False):
-            return False #no existe dicha palabra en el trie
-        for n in elemento:
-            index = self.__charExist__(n,actual.hijo)
-            actual = actual.hijo
-            for i in range(index): # se posiciona en la letra conrrespondiente
-                actual = actual.siguiente
-        #una vez en la parte de abajo de la palabra ir borrando de arriba para abajo
-        while(borrarEntero and actual != self.__raiz):
-            if(actual.cantidadHijos<1): #en caso de que exista una palabra que extienda la palabra a eliminar
-                borrarEntero = False
-                index = self.__charExist__('}', actual.hijo)
-                if(index == 0):#en caso de que la terminación de la palabra sea el inicio de los hijos
-                    actual.hijo = actual.hijo.siguiente #reemplaza los punteros apuntando a el
-                    actual.hijo.padre = actual
-                    actual.cantidadHijos -=1
-                else:#en caso contrario
-                    son = actual.hijo
-                    for i in range(index-1): #se desplaza hasta la terminacion de la palabra
-                        son = son.siguiente
-                    son.siguiente = son.siguiente.siguiente #reemplaza los punteros apuntando a esa terminacion para sacarlo de la lista
-                    actual.cantidadHijos -=1
-                borrarEntero = False
+        for ch in palabra:
+            # como los hijos están ordenados, buscamos por recorrido lineal
+            encontrado, anterior = self.__buscar_o_previo_ordenado(actual.hijo, ch)
+            if encontrado is None:
+                return False
+            actual = encontrado
+        return self.__tiene_fin(actual)
+
+    def borre(self, elemento: str) -> bool:
+        if self.__tamaño == 0:
+            return False
+        try:
+            palabra = self.__validar(elemento)
+        except Exception:
+            return False
+
+        camino = []
+        actual = self.__raiz
+        for ch in palabra:
+            encontrado, _, _ = self.__buscar_en_hijos(actual.hijo, ch)
+            if encontrado is None:
+                return False
+            camino.append(encontrado)
+            actual = encontrado
+
+        fin, fin_ant, _ = self.__buscar_en_hijos(actual.hijo, self.FIN)
+        if fin is None:
+            return False
+
+        # quitar FIN
+        if fin_ant is None:
+            actual.hijo = fin.siguiente
+        else:
+            fin_ant.siguiente = fin.siguiente
+        actual.cantidadHijos -= 1
+        self.__tamaño -= 1
+
+        # podar hacia arriba
+        for nodo in reversed(camino):
+            if nodo.cantidadHijos > 0:
+                break
+            padre = nodo.padre
+            if padre is None:
+                break
+            target, ant, _ = self.__buscar_en_hijos(padre.hijo, nodo.elemento)
+            if target is None:
+                break
+            if ant is None:
+                padre.hijo = target.siguiente
             else:
-                actual.hijo = None
-                actual.cantidadHijos -=1
-            actual = actual.padre
-        self.__tamaño -=1
+                ant.siguiente = target.siguiente
+            padre.cantidadHijos -= 1
+
         return True
 
     def limpie(self):
-        """vacia el trie"""
+        """Vacía por completo el trie."""
         self.__raiz.hijo = None
         self.__tamaño = 0
 
+<<<<<<< HEAD
     def miembro(self, elemento:str)->bool:
         """revisa si un elemento esta en el diccionario
         
@@ -134,52 +200,35 @@ class TriePunteros(Diccionario):
             return False
         return True
 
+=======
+>>>>>>> 7783545bed113d2f4f5d12d620353bfcccd52c4d
     def imprima(self) -> None:
-        """imprime el diccionario"""
+        """Imprime todas las palabras en orden de exploración por hermanos."""
         print(self)
 
-    
-    def __str__(self)->str:
-        """convierte el trie en un string para imprimir"""
-        
-        elementos = []
-        actual = self.__raiz
-        contador = 0
-        stackWord = [] #donde se guarden los caracteres antes de convertirse en un string
-        regresar = [] #cuanto y a donde regresarse 2:para arriba, 1:para la izquierda
-        atras = False #determina si se retorna para simular recursividad
-        while (contador <self.__tamaño and actual != None):
-            if(actual.elemento == '}'):
-                contador +=1
-                word =""
-                for n in stackWord:
-                    word += n
-                elementos.append(word)
-                if(actual.siguiente):
-                    actual = actual.siguiente
+    def __str__(self) -> str:
+        """
+        Recorre en profundidad cada nivel itera la lista de hermanos,
+        """
+        palabras: list[str] = []
+        buffer: list[str] = []
+
+        def dfs_lista(primero: Nodo | None):
+            cur = primero
+            while cur is not None:
+                if cur.elemento == self.FIN:
+                    palabras.append(''.join(buffer))
                 else:
-                    actual = actual.padre
-                    while(regresar.pop()!=2):
-                        stackWord.pop()
-                    stackWord.pop()
-                    atras = True
-                continue
-            else:
-                if(atras and actual.siguiente):
-                    actual=actual.siguiente
-                    atras = False
-                    regresar.append(1)
-                elif(atras and actual.siguiente == None):
-                    actual = actual.padre
-                    stackWord.pop()
-                    regresar.pop()
-                elif(atras==False):
-                    stackWord.append(actual.elemento)
-                    actual = actual.hijo
-                    regresar.append(2)
-                    
-                    
-        return "\n".join(elementos)
+                    buffer.append(cur.elemento)
+                    dfs_lista(cur.hijo)
+                    buffer.pop()
+                cur = cur.siguiente
+
+        dfs_lista(self.__raiz.hijo)
+        return "\n".join(palabras)
+
+    def __del__(self):
+        self.limpie()
     
     def __del__(self):
         self.limpie()

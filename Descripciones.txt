@@ -74,3 +74,36 @@ Borre: elimina el elemento indicado y reconstruye el árbol reinser­tando los v
 Limpie: vacía completamente el vector, eliminando todos los valores almacenados.
 Miembro: busca el elemento recorriendo los índices del vector en función de las fórmulas de los hijos.
 Imprima: realiza un recorrido in-order sobre el vector, mostrando los elementos ordenados ascendentemente.
+
+Descripcion de la estructura de datos generica Trie:
+Es una estructura de datos en forma de arbol usado para almacenar cadenas de caracteres (strings) donde cada camino del arbol genera una palabra.
+
+Descripcion de la estructura de Datos trie por punteros:
+Un arbol trie en donde cada "nodo" es un arreglo de caractares y punteros hacia sus nodos hijos siendo estos tambien arreglos de caracteres de tamaño fijo.
+
+Operaciones:
+Inserte: Recorre desde la raiz cada una de las letras de los arreglos creando nodos en caso de que no existan
+Borre: Recorre recursivamente los nodos en busaca de la palabra y en caso de encontrarla borrarla teniendo cuidado con el resto de hijos
+Limpie: Elimina todo el trie regresandolo a un estado inicial.
+Miembro: Se mueve por cada caracter de la palabra además de cada caracter del arreglo buscando coincidencias
+Imprima: Se imprime a si mismo
+
+Descripcion de la estructura de datos trie por punteros:
+Un arbol trie donde cada nodo corresponde a una lista dinamica de caracteres y sus punteros a sus nodos hijos.
+
+Operaciones:
+Inserte: Recorre cada letra de la palabra comparando con los niveles del arbol hasta encontrar un caracter que no este para agregarlo.
+Borre: Recorre cada letra de la palabra comparando con los niveles del arbol hasta llegar al final de la palabra tanto del elemento como en el trie para eliminar la plabra con cuidado del resto de hijos.
+Limpie: se borran los punteros de los hijos para volver a un estado inicial.
+Miembro: Recorre cada letra de la palabra comparando con los nodos hasta llegar al final de la palabra revisando si en el mismo nodo se encuentra una terminacion de palabra.
+Imprima: se imprime a si misma
+
+Descripción de la estructura de datos trie por arreglos:
+Estructura de datos para almacenar cadenas usando un árbol de prefijos. Cada nodo mantiene un arreglo fijo de hijos donde cada posición representa un carácter permitido. En este caso se usan 27 posiciones: 26 para las letras a..z y 1 posición especial para marcar el fin de palabra.
+
+Operaciones:
+Inserte: recorre la palabra carácter por carácter, si un hijo no existe se crea un nuevo nodo en la posición correspondiente del arreglo. Al final marca la celda especial de fin de palabra.
+Borre: verifica que la palabra exista, desmarca el fin de palabra y elimina nodos “hoja” que hayan quedado sin hijos para no desperdiciar espacio.
+Limpie: reasigna la raíz a un nodo vacío y deja todos los arreglos de hijos sin referencias.
+Miembro: recorre los hijos según los caracteres, al terminar comprueba la marca de fin de palabra para confirmar que la cadena está almacenada.
+Imprima: recorre el trie en orden alfabético acumulando caracteres y muestra todas las palabras almacenadas.
